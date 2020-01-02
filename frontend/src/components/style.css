@@ -1,0 +1,10 @@
+@import "./reactAgenda.css";
+@import './Modal/Modal.css';
+
+a:not([href]) {
+    color: white;
+}
+
+.agendCtrls-wrapper {
+    overflow: auto;
+}
