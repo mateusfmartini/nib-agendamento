@@ -19,7 +19,7 @@ module.exports = app => {
                         .where({ codigo: parametro.codigo }).first()
         
                     if (codigoExistente && parametro.id != codigoExistente.id)
-                        notExistsOrError(codigoExistente, `Código ${parametro.descricao} já cadastrado!`)
+                        notExistsOrError(codigoExistente, `Código ${parametro.codigo} já cadastrado!`)
                 }
     
                 if (parametro.codigoexterno) {
@@ -42,7 +42,7 @@ module.exports = app => {
                 const codigoExistente = await app.db('parametro')
                 .where({ codigo: parametro.codigo }).first()
     
-                notExistsOrError(codigoExistente, `Código ${parametro.descricao} já cadastrado!`)
+                notExistsOrError(codigoExistente, `Código ${parametro.codigo} já cadastrado!`)
     
                 if (parametro.codigoexterno) {
                     const codigoExternoExistente = await app.db('parametro')
