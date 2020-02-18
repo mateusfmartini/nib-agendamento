@@ -5,14 +5,14 @@ import PropTypes from 'prop-types';
 class ModalView extends Component {
   render() {
     if(this.props.frameless){
-      return <div className="modal-nude  box-card">
+      return <div className="modal-nude">
               <a onClick={this.props.closeFunc} className="modal-close">X</a>
                 <div className="modal-title"> {this.props.title}</div>
          {this.props.children}
         </div>
     }
 
-    return <div className="modal  box-card">
+    return <div className="modal">
       <a onClick={this.props.closeFunc} className="modal-close">X</a>
               <div className="modal-title"> {this.props.title}</div>
        {this.props.children}

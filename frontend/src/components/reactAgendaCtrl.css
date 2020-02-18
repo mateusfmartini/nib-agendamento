@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 10px;
 }
 
 .agendCtrls-event-input {
@@ -61,14 +62,6 @@
 
 }
 
-.agendCtrls-time-picker {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-
 .agendCtrls-time-picker label {
   font-size: 15px;
   font-weight: 600;
@@ -78,6 +71,7 @@
 .agendCtrls-label-inline {
   display: flex;
       flex-direction: column;
+      padding: 0px 10px;
       width: 50%;
 }
 

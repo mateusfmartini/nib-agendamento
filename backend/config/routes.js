@@ -1,4 +1,6 @@
 module.exports = app => {
+    app.post('/validateToken', app.api.auth.validateToken)
+
     app.route('/parametros')
         .post(app.api.parametro.save)
         .get(app.api.parametro.get)
@@ -7,10 +9,13 @@ module.exports = app => {
         .put(app.api.parametro.save)
         .get(app.api.parametro.getById)
         .delete(app.api.parametro.remove)
-        
+
     app.route('/pessoas')
         .post(app.api.pessoa.save)
         .get(app.api.pessoa.get)
+
+    app.route('/pessoas/signin')
+        .post(app.api.auth.signinPessoa)
 
     app.route('/pessoas/:id')
         .put(app.api.pessoa.save)
@@ -20,7 +25,7 @@ module.exports = app => {
     app.route('/pessoas/:id/agendamentos')
         .get(app.api.agendamento.getByPessoa)
         .delete(app.api.agendamento.removeByPessoa)
-        
+
     app.route('/salas')
         .post(app.api.sala.save)
         .get(app.api.sala.get)

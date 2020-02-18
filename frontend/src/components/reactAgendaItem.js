@@ -103,10 +103,11 @@ if(elem){
               </div>
 
             <div className="agenda-item-description">
-              <section>{this.props.item.nomepessoa} - {this.props.item.name}</section>
+              <section className="nomeEvento">{this.props.item.name}</section>
             <small>
               {duratL} - {duratE}, {duratH}
             </small>
+            <section className="nomePessoa">{this.props.item.nomepessoa}</section>
           </div>
 
     </div>

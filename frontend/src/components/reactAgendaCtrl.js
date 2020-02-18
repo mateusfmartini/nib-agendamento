@@ -48,7 +48,7 @@ export default class ReactAgendaCtrl extends Component {
   if (!this.props.selectedCells) {
     let start = now
     let endT = moment(now).add(15, 'Minutes');
-    return this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT, idpessoa: this.props.pessoaList[0].id});
+    return this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT, idpessoa: this.props.pessoaList[0] ? this.props.pessoaList[0].id : null});
   }
   
   if (this.props.selectedCells && this.props.selectedCells[0] && this.props.selectedCells[0]._id) {
@@ -62,13 +62,13 @@ export default class ReactAgendaCtrl extends Component {
   if (this.props.selectedCells && this.props.selectedCells.length === 1) {
     let start = moment(getFirst(this.props.selectedCells));
     let endT = moment(getLast(this.props.selectedCells)).add(15, 'Minutes');
-    return this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT, idpessoa: this.props.pessoaList[0].id});
+    return this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT, idpessoa: this.props.pessoaList[0] ? this.props.pessoaList[0].id : null});
   }
 
   if (this.props.selectedCells && this.props.selectedCells.length > 0) {
     let start = moment(getFirst(this.props.selectedCells));
     let endT = moment(getLast(this.props.selectedCells)) || now;
-    this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT, idpessoa: this.props.pessoaList[0].id});
+    this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT, idpessoa: this.props.pessoaList[0] ? this.props.pessoaList[0].id : null});
   }
 
 }
@@ -205,7 +205,7 @@ render() {
             </div>
           </div>
 
-          <input type="submit" value="Save"/>
+          <input type="Submit" value="Enviar"/>
         </form>
       </div>
     );
@@ -218,7 +218,7 @@ render() {
         <div className="agendCtrls-label-wrapper">
           <div className="agendCtrls-label-inline">
             <label>Nome do evento</label>
-            <input type="text" ref="eventName" autoFocus name="name" className="agendCtrls-event-input" value={this.state.name} onChange={this.handleChange.bind(this)} placeholder="Event Name"/>
+            <input type="text" ref="eventName" autoFocus name="name" className="agendCtrls-event-input" value={this.state.name} onChange={this.handleChange.bind(this)} placeholder="Nome do evento"/>
           </div>
           <div className="agendCtrls-label-inline">
             <label>Cor de fundo</label>
@@ -245,7 +245,7 @@ render() {
           </div>
         </div>
 
-        <input type="submit" value="Save"/>
+        <input type="Submit" value="Enviar"/>
       </form>
     </div>
   );

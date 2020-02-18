@@ -16,7 +16,14 @@ height: 12px;
   height: 12px;
 }
 
+.nomePessoa{
+  color: #1d5ea3;
+  font-size: 13px!important;
+}
 
+.nomeEvento{
+  font-size: 15px!important;
+}
 
 .agenda-cell-item {
     font-size: 14px;
