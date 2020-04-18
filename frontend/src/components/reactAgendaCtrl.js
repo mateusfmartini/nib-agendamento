@@ -22,7 +22,10 @@ export default class ReactAgendaCtrl extends Component {
       classes: 'priority-1',
       startDateTime: now,
       endDateTime: now,
-      idpessoa: null
+      idpessoa: null,
+      recorrencia: false,
+      dataRecorrencia: moment().format('YYYY-MM-DD'),
+      intervaloRecorrencia: 1
     }
     this.handleDateChange = this.handleDateChange.bind(this)
     this.addEvent = this.addEvent.bind(this)
@@ -48,27 +51,27 @@ export default class ReactAgendaCtrl extends Component {
   if (!this.props.selectedCells) {
     let start = now
     let endT = moment(now).add(15, 'Minutes');
-    return this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT, idpessoa: this.props.pessoaList[0] ? this.props.pessoaList[0].id : null});
+    return this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT, dataRecorrencia: moment(endT).format('YYYY-MM-DD'), idpessoa: this.props.pessoaList[0] ? this.props.pessoaList[0].id : null});
   }
   
   if (this.props.selectedCells && this.props.selectedCells[0] && this.props.selectedCells[0]._id) {
     let start = moment(this.props.selectedCells[0].startDateTime);
     let endT = moment(this.props.selectedCells[0].endDateTime);
     
-    return this.setState({editMode: true, name: this.props.selectedCells[0].name, classes: this.props.selectedCells[0].classes, startDateTime: start, endDateTime: endT, idpessoa: this.props.selectedCells[0].idpessoa});
+    return this.setState({editMode: true, name: this.props.selectedCells[0].name, classes: this.props.selectedCells[0].classes, startDateTime: start, endDateTime: endT, dataRecorrencia: moment(endT).format('YYYY-MM-DD'), idpessoa: this.props.selectedCells[0].idpessoa});
     
   }
   
   if (this.props.selectedCells && this.props.selectedCells.length === 1) {
     let start = moment(getFirst(this.props.selectedCells));
     let endT = moment(getLast(this.props.selectedCells)).add(15, 'Minutes');
-    return this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT, idpessoa: this.props.pessoaList[0] ? this.props.pessoaList[0].id : null});
+    return this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT, dataRecorrencia: moment(endT).format('YYYY-MM-DD'), idpessoa: this.props.pessoaList[0] ? this.props.pessoaList[0].id : null});
   }
 
   if (this.props.selectedCells && this.props.selectedCells.length > 0) {
     let start = moment(getFirst(this.props.selectedCells));
     let endT = moment(getLast(this.props.selectedCells)) || now;
-    this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT, idpessoa: this.props.pessoaList[0] ? this.props.pessoaList[0].id : null});
+    this.setState({editMode: false, name: '', startDateTime: start, endDateTime: endT, dataRecorrencia: moment(endT).format('YYYY-MM-DD'), idpessoa: this.props.pessoaList[0] ? this.props.pessoaList[0].id : null});
   }
 
 }
@@ -96,6 +99,11 @@ export default class ReactAgendaCtrl extends Component {
 
   }
 
+  addDays = (date, days) => {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
 
 addEvent = async (e) => {
   if (this.state.name.length < 1) {
@@ -117,6 +125,29 @@ addEvent = async (e) => {
       await axios.post(`${baseApiUrl}/agendamentos`, postObj)
     } catch(err) {
       alert(err)
+    }
+
+    if (this.state.recorrencia) {
+      var dateStartRec = this.addDays(this.state.startDateTime, 7 * this.state.intervaloRecorrencia)
+      var dateEndRec = this.addDays(this.state.endDateTime, 7 * this.state.intervaloRecorrencia)
+      while(dateEndRec < this.addDays(new Date(this.state.dataRecorrencia),1)) {
+
+        const postObjRec = {
+          ...postObj,
+          datahoraini: dateStartRec ,
+          datahorafim: dateEndRec 
+        }
+
+        try {
+          await axios.post(`${baseApiUrl}/agendamentos`, postObjRec)
+        } catch(err) {
+          alert(err)
+        }
+
+        dateStartRec = this.addDays(dateStartRec, 7 * this.state.intervaloRecorrencia)
+        dateEndRec = this.addDays(dateEndRec, 7 * this.state.intervaloRecorrencia)
+
+      }
     }
 
    return this.props.Addnew()
@@ -204,7 +235,6 @@ render() {
               <Rdate value={this.state.endDateTime} onChange={this.handleDateChange.bind(null, 'endDateTime')} input={false} viewMode="time" ></Rdate>
             </div>
           </div>
-
           <input type="Submit" value="Enviar"/>
         </form>
       </div>
@@ -244,7 +274,51 @@ render() {
             <Rdate value={this.state.endDateTime} onChange={this.handleDateChange.bind(null, 'endDateTime')} input={false} viewMode="time" ></Rdate>
           </div>
         </div>
-
+        <div className="agendCtrls-label-wrapper">
+          <div className="agendCtrls-label-inline">
+            <label>Recorrência <input
+              name="recorrencia"
+              type="checkbox"
+              checked={this.state.recorrencia}
+              onChange={(event) => {
+                this.setState({
+                  recorrencia: event.target.checked
+                })
+              }} />
+              </label>
+          </div>
+          { this.state.recorrencia && 
+          <div className="agendCtrls-label-wrapper">
+            <div className="agendCtrls-label-inline">
+              Até:
+                <input
+                  name="dataRecorrencia"
+                  type="date"
+                  min={moment(this.state.endDateTime).format('YYYY-MM-DD')}
+                  value={this.state.dataRecorrencia}
+                  onChange={(event) => {
+                    this.setState({
+                      dataRecorrencia: event.target.value
+                    })
+                  }} />
+            </div> 
+            <div className="agendCtrls-label-inline">
+              A cada: 
+              <input
+                name="intervaloRecorrencia"
+                type="number"
+                value={this.state.intervaloRecorrencia}
+                onChange={(event) => {
+                  this.setState({
+                    intervaloRecorrencia: event.target.value
+                  })
+                }} />
+              semanas
+            </div>
+          </div>
+          }
+        </div>
+        
         <input type="Submit" value="Enviar"/>
       </form>
     </div>
